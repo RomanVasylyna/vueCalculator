@@ -2,8 +2,8 @@
 <div class="calculator">
 
     <div class="display">
-        <p class="top" v-if="displayTop">{{top || '0'}}</p>
-        <p class="bottom">{{bottom || '0'}}</p>
+        <p class="main">{{main || '0'}}</p>
+        <p class="secondary" v-if="showSecondary">{{secondary || '0'}}</p>
     </div>
 
     <div class="first-row">
@@ -48,10 +48,11 @@ name: 'Calculator',
 
 data() {
 return {
-top: '',
-bottom: '',
-displayTop: false,
+main: '',
+secondary: '',
+showSecondary: false,
 operation: '', //Defining Type of Operation
+equalsStatus: false,
 }
 },
 
@@ -59,41 +60,62 @@ methods: {
 
 // Clear Fields
 clear() {
-this.top = '';
-this.bottom = ''
+this.main = '';
+this.secondary = ''
 },
 
 // Type numbers
 type(e) {
-this.bottom += e.target.innerHTML;
+this.main += e.target.innerHTML;
+let regex = this.main.match(/[0-9]+/g);
+this.showSecondary = false;
+this.secondary = this.getSum(regex);
+console.log(regex);
+// this.secondary = this.main;
+},
+
+getSum(arr) {
+let sum = 0;
+for(let i = 0; i < arr.length; i++) {
+sum += arr[i];
+}
+return sum;
 },
 
 // Making sure dot is added only once
 dot() {
-if(!this.bottom.includes('.')) {
-this.bottom += '.';
+if(!this.main.includes('.')) {
+this.main += '.';
 }
 },
 
 // Getting percentages of a current number
 // parseFloat - recieves a string and returns decimal with a dot
 percent() {
-this.current = `${parseFloat(this.current) / 100}`; // Return back the string
+if(!this.main.includes('%')) {
+this.main += '%';
+this.showSecondary = true;
+this.secondary = `${parseFloat(this.main) / 100}`; // Return back the string
+}
 },
 
 makeOperation(e) {
-let operationType = e.target.innerHTML.toString();
-this.operation = operationType;
-
-this.displayTop = true;
-this.top = this.bottom + operationType;
+let sign = e.target.innerHTML.toString();
+// this.operation = sign;
+if(!this.main.includes(sign)){
+this.main += sign;
+}
 },
 
+
+addition() {
+},
+
+
 equals() {
-// 5+5=10=    
-// 5+5=10=15= 
-this.top += this.bottom + '='; // 5+5= 
-this.bottom = parseInt(this.bottom) + parseInt(this.top);
+this.equalsStatus = true; // Meaning Equals Button was clicked
+this.showSecondary = true; // Show Secondary Display
+this.secondary = this.main;
 },
 
 
@@ -123,8 +145,12 @@ display: flex;
 flex-direction: column;
 }
 
-.display .top{
-font-size: 14px;
+.display{
+font-size: 1.2rem;
+}
+
+.secondary{
+color: gray;
 }
 
 .first-row, .second-row, .third-row, .fourth-row, .fifth-row{
