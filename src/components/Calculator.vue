@@ -2,8 +2,17 @@
 <div class="calculator">
 
     <div class="display">
-        <p class="main">{{main || '0'}}</p>
+        
+        <!-- Top Display -->
+        <div class="calculation">
+        <p class="left" v-if="showMain">{{left || '0'}}</p>
+        <p>{{ operation || ''}}</p>
+        <p class="right" v-if="showMain">{{right}}</p>
+        </div>
+        
+        <!-- Bottom Display -->
         <p class="secondary" v-if="showSecondary">{{secondary || '0'}}</p>
+
     </div>
 
     <div class="first-row">
@@ -48,9 +57,11 @@ name: 'Calculator',
 
 data() {
 return {
-main: '',
+left: '',
+right:'',
 secondary: '',
 showSecondary: false,
+showMain: true,
 operation: '', //Defining Type of Operation
 equalsStatus: false,
 }
@@ -60,27 +71,26 @@ methods: {
 
 // Clear Fields
 clear() {
-this.main = '';
-this.secondary = ''
+this.left = '';
+this.right = '';
+this.secondary = '';
+this.showSecondary = false;
+this.showMain = true;
+this.operation = '';
 },
+
 
 // Type numbers
 type(e) {
-this.main += e.target.innerHTML;
-let regex = this.main.match(/[0-9]+/g);
-this.showSecondary = false;
-this.secondary = this.getSum(regex);
-console.log(regex);
-// this.secondary = this.main;
+if(this.operation === '') {
+this.left += e.target.innerHTML;
+} else {
+ this.right += e.target.innerHTML; 
+ this.showSecondary = true;
+ this.secondary = this.setOperation(parseInt(this.left), parseInt(this.right));
+}
 },
 
-getSum(arr) {
-let sum = 0;
-for(let i = 0; i < arr.length; i++) {
-sum += arr[i];
-}
-return sum;
-},
 
 // Making sure dot is added only once
 dot() {
@@ -102,20 +112,27 @@ this.secondary = `${parseFloat(this.main) / 100}`; // Return back the string
 makeOperation(e) {
 let sign = e.target.innerHTML.toString();
 // this.operation = sign;
-if(!this.main.includes(sign)){
-this.main += sign;
+if(!this.operation.includes(sign)){
+this.operation = sign;
 }
 },
 
-
-addition() {
+setOperation(a, b) {
+if(this.operation == '+') {
+return parseInt(a) + parseInt(b);   
+} if(this.operation == '-') {
+return parseInt(a) - parseInt(b);   
+} if(this.operation == '÷') {
+return parseInt(a) / parseInt(b);     
+} if(this.operation == 'x') {
+return parseInt(a) * parseInt(b);      
+}
 },
 
-
 equals() {
-this.equalsStatus = true; // Meaning Equals Button was clicked
-this.showSecondary = true; // Show Secondary Display
-this.secondary = this.main;
+this.secondary = this.setOperation(this.left, this.right); 
+this.showMain = false;
+this.operation = '';
 },
 
 
@@ -147,6 +164,10 @@ flex-direction: column;
 
 .display{
 font-size: 1.2rem;
+}
+
+.calculation{
+display: flex;
 }
 
 .secondary{
