@@ -2,17 +2,17 @@
 <div class="calculator">
 
     <div class="display">
-        
+
         <!-- Top Display -->
         <div class="calculation">
         <p class="right" v-if="showMain">{{right}}</p>
         <p>{{ operation || ''}}</p>
         <p class="left" v-if="showMain">{{left || 0}}</p>
         </div>
-        
+
         <!-- Bottom Display -->
-        <p class="secondary-muted" 
-        v-if="showSecondary" :class="{'secondary-normal' : equalsStatus}"
+        <p class="secondary-muted"
+        v-if="showSecondary"
         >{{secondary || '0'}}</p>
 
 
@@ -74,7 +74,7 @@ methods: {
 
 // Restart Calculator's Values
 clear() {
-// Clear Top Display (both parts)    
+// Clear Top Display (both parts)
 this.left = '';
 this.right = '';
 
@@ -87,15 +87,15 @@ this.showMain = true;
 //Clear Opearation type
 this.operation = '';
 //Clear Equals Status
-this.equalsStatus = false; 
+this.equalsStatus = false;
 },
 
 
 // Type numbers
 type(e) {
  if(this.equalsStatus) { //If equals buttons has been clicked
- this.clear(); //Wipe out data
- }   
+//  this.clear(); //Wipe out data
+ }
  if(this.operation === '') { // Until operation has been defined
  this.left += e.target.innerHTML; // Add numbers to left display
  }
@@ -109,7 +109,7 @@ type(e) {
 
 
 // Making sure dot is added only once
-dot() {    
+dot() {
 if(!this.left.includes('.')) { //If left display already has a dot forbid others
 this.left += '.';
 }
@@ -121,14 +121,16 @@ this.right += '.';
 // Getting percentages of a current number
 // parseFloat - recieves a string and returns decimal with a dot
 percent() {
-if(!this.left.includes('%')) {
-this.left += '%';
-this.showSecondary = true;
-this.secondary = `${parseFloat(this.left) / 100}`; // Return back the string
-} if(this.left === '0') {
-this.left = '0';    
+if(!this.left.includes('%')) { // If left display doesn't have %
+this.left += '%'; // Add % sign
+this.showSecondary = true; // Show secondary display
+this.secondary = `${parseFloat(this.left) / 100}`; // Calculate the percentages
+// } if(this.left === '0') {
+// this.left = '0';
+// }
 }
 },
+
 
 makeOperation(e) {
 let sign = e.target.innerHTML.toString();
@@ -139,23 +141,26 @@ this.operation = sign;
 },
 
 setOperation(a, b) {
-if(this.operation == '+') {    
-return parseInt(a) + parseInt(b);   
+if(this.operation == '+') {
+return parseInt(a) + parseInt(b);
 } if(this.operation == '-') {
-return parseInt(a) - parseInt(b);   
+return parseInt(a) - parseInt(b);
 } if(this.operation == '÷') {
-return parseInt(a) / parseInt(b);     
+return parseInt(a) / parseInt(b);
 } if(this.operation == 'x') {
-return parseInt(a) * parseInt(b);      
+return parseInt(a) * parseInt(b);
 }
 },
 
 equals() {
-// this.secondary = this.setOperation(this.left, this.right); 
+// this.secondary = this.setOperation(this.left, this.right);
 this.equalsStatus = true;
-this.showMain = false;
+this.showMain = true;
 this.operation = '';
-this.left = this.secondary;
+this.left = this.secondary.toString();
+this.secondary = '';
+this.showSecondary = false;
+this.right = '';
 },
 
 
@@ -179,7 +184,7 @@ font-size: 1.5rem;
 
 .display{
 display: flex;
-flex-direction: column;    
+flex-direction: column;
 background: rgb(31, 30, 30);
 color: #fff;
 height: 20vh;
@@ -197,11 +202,13 @@ color: gray;
 padding-left: 25vw;
 }
 
-.secondary-normal{
+/* .secondary-normal{
 color: #fff;
 padding-left: 25vw;
 padding-bottom: 5px;
-}
+техпаспорт 21
+заява 27
+} */
 
 .first-row, .second-row, .third-row, .fourth-row, .fifth-row{
 display: flex;
@@ -209,11 +216,13 @@ flex-direction: row;
 }
 
 .first-row .clear{
-padding: 1em 4.8vw;      
+padding: 1em 17%;
 }
 
+/* 4.8vw */
+
 .fifth-row .yellow-btn{
-padding: 1em 4.8vw;    
+padding: 1em 17%;
 }
 
 .btn{
@@ -235,6 +244,83 @@ padding: 20px;
 border: 1px solid rgb(80, 80, 80);
 cursor: pointer;
 width: 20vw;
+}
+
+/* Phones */
+@media (max-width: 690px) {
+
+.calculator{
+display: flex;
+flex-direction: column;
+width: 85vw;
+margin: 8px auto;
+font-size: 1.5rem;
+}
+
+.display{
+display: flex;
+flex-direction: column;
+background: rgb(31, 30, 30);
+color: #fff;
+height: 24vh;
+font-size: 1.7rem;
+padding-right: 1em;
+}
+
+.first-row .clear{
+padding: 1em 19%;
+}
+
+/* 4.8vw */
+
+.fifth-row .yellow-btn{
+padding: 1em 19%;
+}
+
+.secondary-muted{
+color: gray;
+padding-left: 65vw;
+}
+
+
+}
+
+/* Ipad and other tablets*/
+@media only screen and (max-width: 800px) and (min-width: 700px) {
+
+.calculator{
+display: flex;
+flex-direction: column;
+width: 55vw;
+margin: 15px auto;
+font-size: 1.5rem;
+}
+
+.display{
+display: flex;
+flex-direction: column;
+background: rgb(31, 30, 30);
+color: #fff;
+height: 24vh;
+font-size: 1.7rem;
+padding-right: 1em;
+}
+
+.first-row .clear{
+padding: 1em 19%;
+}
+
+/* 4.8vw */
+
+.fifth-row .yellow-btn{
+padding: 1em 19%;
+}
+
+.secondary-muted{
+color: gray;
+padding-left: 40vw;
+}
+
 }
 
 </style>
