@@ -5,18 +5,21 @@
         
         <!-- Top Display -->
         <div class="calculation">
-        <p class="left" v-if="showMain">{{left || '0'}}</p>
-        <p>{{ operation || ''}}</p>
         <p class="right" v-if="showMain">{{right}}</p>
+        <p>{{ operation || ''}}</p>
+        <p class="left" v-if="showMain">{{left || 0}}</p>
         </div>
         
         <!-- Bottom Display -->
-        <p class="secondary" v-if="showSecondary">{{secondary || '0'}}</p>
+        <p class="secondary-muted" 
+        v-if="showSecondary" :class="{'secondary-normal' : equalsStatus}"
+        >{{secondary || '0'}}</p>
+
 
     </div>
 
     <div class="first-row">
-        <div class="btn" @click="clear">C</div>
+        <div class="btn clear" @click="clear">C</div>
         <div class="btn" @click="percent">%</div>
         <div class="yellow-btn" @click="makeOperation($event)">÷</div>
     </div>
@@ -69,43 +72,61 @@ equalsStatus: false,
 
 methods: {
 
-// Clear Fields
+// Restart Calculator's Values
 clear() {
+// Clear Top Display (both parts)    
 this.left = '';
 this.right = '';
+
+//Clear Bottom Display
 this.secondary = '';
+//Hide Bottom Display
 this.showSecondary = false;
+//Show Top Display
 this.showMain = true;
+//Clear Opearation type
 this.operation = '';
+//Clear Equals Status
+this.equalsStatus = false; 
 },
 
 
 // Type numbers
 type(e) {
-if(this.operation === '') {
-this.left += e.target.innerHTML;
-} else {
- this.right += e.target.innerHTML; 
- this.showSecondary = true;
- this.secondary = this.setOperation(parseInt(this.left), parseInt(this.right));
-}
+ if(this.equalsStatus) { //If equals buttons has been clicked
+ this.clear(); //Wipe out data
+ }   
+ if(this.operation === '') { // Until operation has been defined
+ this.left += e.target.innerHTML; // Add numbers to left display
+ }
+ else { //When the operation has been declared
+ this.right += e.target.innerHTML; // Add numbers to right display
+ this.showSecondary = true; // Show bottom display when right display has values
+ this.secondary = this.setOperation(parseInt(this.left), parseInt(this.right)); //Make calculations in the bottom display
+ }
 },
 
 
+
 // Making sure dot is added only once
-dot() {
-if(!this.main.includes('.')) {
-this.main += '.';
+dot() {    
+if(!this.left.includes('.')) { //If left display already has a dot forbid others
+this.left += '.';
+}
+if(this.showSecondary && !this.right.includes('.')) { //If right display is shown and already has a dot forbid others
+this.right += '.';
 }
 },
 
 // Getting percentages of a current number
 // parseFloat - recieves a string and returns decimal with a dot
 percent() {
-if(!this.main.includes('%')) {
-this.main += '%';
+if(!this.left.includes('%')) {
+this.left += '%';
 this.showSecondary = true;
-this.secondary = `${parseFloat(this.main) / 100}`; // Return back the string
+this.secondary = `${parseFloat(this.left) / 100}`; // Return back the string
+} if(this.left === '0') {
+this.left = '0';    
 }
 },
 
@@ -118,7 +139,7 @@ this.operation = sign;
 },
 
 setOperation(a, b) {
-if(this.operation == '+') {
+if(this.operation == '+') {    
 return parseInt(a) + parseInt(b);   
 } if(this.operation == '-') {
 return parseInt(a) - parseInt(b);   
@@ -130,9 +151,11 @@ return parseInt(a) * parseInt(b);
 },
 
 equals() {
-this.secondary = this.setOperation(this.left, this.right); 
+// this.secondary = this.setOperation(this.left, this.right); 
+this.equalsStatus = true;
 this.showMain = false;
 this.operation = '';
+this.left = this.secondary;
 },
 
 
@@ -149,34 +172,48 @@ this.operation = '';
 .calculator{
 display: flex;
 flex-direction: column;
-width: 30vw;
+width: 28vw;
 margin: 20px auto;
 font-size: 1.5rem;
 }
 
 .display{
+display: flex;
+flex-direction: column;    
 background: rgb(31, 30, 30);
 color: #fff;
 height: 20vh;
-display: flex;
-flex-direction: column;
-}
-
-.display{
-font-size: 1.2rem;
+font-size: 1.7rem;
+padding-right: 1rem;
 }
 
 .calculation{
 display: flex;
+flex-direction: row-reverse;
 }
 
-.secondary{
+.secondary-muted{
 color: gray;
+padding-left: 25vw;
+}
+
+.secondary-normal{
+color: #fff;
+padding-left: 25vw;
+padding-bottom: 5px;
 }
 
 .first-row, .second-row, .third-row, .fourth-row, .fifth-row{
 display: flex;
 flex-direction: row;
+}
+
+.first-row .clear{
+padding: 1em 4.8vw;      
+}
+
+.fifth-row .yellow-btn{
+padding: 1em 4.8vw;    
 }
 
 .btn{
