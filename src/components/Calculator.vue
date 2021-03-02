@@ -93,8 +93,9 @@ this.equalsStatus = false;
 
 // Type numbers
 type(e) {
- if(this.equalsStatus) { //If equals buttons has been clicked
+ if(this.equalsStatus && this.left == '0') { //If equals buttons has been clicked
 //  this.clear(); //Wipe out data
+ this.left = '';
  }
  if(this.operation === '') { // Until operation has been defined
  this.left += e.target.innerHTML; // Add numbers to left display
@@ -291,9 +292,9 @@ padding-left: 65vw;
 .calculator{
 display: flex;
 flex-direction: column;
-width: 55vw;
+width: 80vw;
 margin: 15px auto;
-font-size: 1.5rem;
+font-size: 2rem;
 }
 
 .display{
@@ -301,26 +302,79 @@ display: flex;
 flex-direction: column;
 background: rgb(31, 30, 30);
 color: #fff;
-height: 24vh;
-font-size: 1.7rem;
+height: 23vh;
+font-size: 2.5rem;
 padding-right: 1em;
 }
 
 .first-row .clear{
-padding: 1em 19%;
+padding: 1em 18.8%;
 }
 
 /* 4.8vw */
 
 .fifth-row .yellow-btn{
-padding: 1em 19%;
+padding: 1em 16.4%;
 }
 
 .secondary-muted{
 color: gray;
-padding-left: 40vw;
+padding-left: 66vw;
 }
 
+.btn{
+background: rgb(240, 236, 236);
+padding: 35px;
+width: 20vw;
+border: 1px solid rgb(80, 80, 80);
+cursor: pointer;
+}
+
+}
+
+/* Ipad Pro */
+@media only screen and (max-width: 1100px) and (min-width: 1000px) {
+
+.calculator{
+display: flex;
+flex-direction: column;
+width: 80vw;
+margin: 2em auto;
+font-size: 2.8rem;
+}
+
+.display{
+display: flex;
+flex-direction: column;
+background: rgb(31, 30, 30);
+color: #fff;
+height: 25vh;
+font-size: 3.5rem;
+padding-right: 1em;
+}
+
+.first-row .clear{
+padding: 1em 19.6%;
+}
+
+/* 4.8vw */
+
+.fifth-row .yellow-btn{
+padding: 1em 16%;
+}
+
+.secondary-muted{
+color: gray;
+padding-left: 66vw;
+}
+
+.btn{
+background: rgb(240, 236, 236);
+padding: 50px;
+width: 20vw;
+border: 1px solid rgb(80, 80, 80);
+cursor: pointer;
+}
 }
 
 </style>
